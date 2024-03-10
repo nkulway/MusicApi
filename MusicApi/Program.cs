@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ApiDbContext>(option => option.UseSqlServer(@"Data Source=Your Server Name;Initial Catalog=Your Database Name;"));
+builder.Services.AddDbContext<ApiDbContext>(option => option.UseSqlServer(@"Data Source=(localdb)\ProjectModels;Initial Catalog=MusicDb;Integrated Security=True;"));
 
 var app = builder.Build();
 
@@ -22,6 +22,12 @@ if (app.Environment.IsDevelopment())
 
 //ApiDbContext dbcontext = app.Services.GetRequiredService<ApiDbContext>();
 //dbcontext.Database.EnsureCreated();
+
+using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
+    dbContext.Database.EnsureCreated();
+}
 
 app.UseHttpsRedirection();
 
